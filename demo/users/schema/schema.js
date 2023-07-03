@@ -15,12 +15,26 @@ const users = [
     {id: '89', firstName: 'Alex', age: 23},
 ]
 
+const companyType = new GraphQLObjectType({
+    name: 'Company',
+    fields: {
+        id:{type: graphql.GraphQLString},
+        name:{type: graphql.GraphQLString},
+        description:{type: graphql.GraphQLString},
+    }
+})
+
 const userType = new GraphQLObjectType({
     name: 'User',
     fields: {
         id:{type: graphql.GraphQLString},
         firstName:{type: graphql.GraphQLString},
         age:{type: graphql.GraphQLInt},
+        company: {type: companyType,
+            resolve(parentValue, args) {
+                return axios.get(`http://localhost:3000/companies/${parentValue.companyId}`)
+                .then(resp => resp.data)}
+            }
     }
 })
 
